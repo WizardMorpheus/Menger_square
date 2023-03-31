@@ -135,6 +135,10 @@ SDL_Texture* loadTexture(std::string path)
 	return newTexture;
 }
 
+
+const int SQUARE_SIZE = 1000;
+
+
 int main(int argc, char* args[])
 {
 
@@ -159,6 +163,21 @@ int main(int argc, char* args[])
 			SDL_Event e;
 
 
+
+
+			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			SDL_RenderClear(gRenderer);
+
+
+			SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+			SDL_Rect square = { SCREEN_WIDTH / 2 - SQUARE_SIZE / 2,SCREEN_HEIGHT / 2 - SQUARE_SIZE / 2,SQUARE_SIZE,SQUARE_SIZE };
+			SDL_RenderFillRect(gRenderer, &square);
+
+			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+
+			int l = 1;
+
 			//While application is running
 			while (!quit)
 			{
@@ -172,20 +191,51 @@ int main(int argc, char* args[])
 					}
 				}
 
-
-				//Clear screen
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(gRenderer);
-
-
 				//render things
 
+				if (SQUARE_SIZE / (pow(3, l)) > 1)
+				{
 
-				
+					float x = SCREEN_WIDTH/2 - SQUARE_SIZE/2;
+					float y = SCREEN_HEIGHT/2 - SQUARE_SIZE/2;
+					square.x = 0;
+					square.y = 0;
+					square.w = SQUARE_SIZE / (pow(3, l));
+					square.h = SQUARE_SIZE / (pow(3, l));
+
+					x += float(SQUARE_SIZE) / pow(3, l);
+					y += float(SQUARE_SIZE) / pow(3, l);
+					square.x = floor(x);
+					square.y = floor(y);
 
 
-				//Update screen
-				SDL_RenderPresent(gRenderer);
+
+
+					for (int i = 0; i < pow(3, l - 1); i++)
+					{
+						for (int j = 0; j < pow(3, l - 1); j++)
+						{
+							SDL_RenderFillRect(gRenderer, &square);
+
+							x += (float(SQUARE_SIZE) / pow(3, l)) * 3;
+							square.x = floor(x);
+
+						}
+
+						x = SCREEN_WIDTH / 2 - SQUARE_SIZE / 2 + float(SQUARE_SIZE) / pow(3, l);
+						square.x = floor(x);
+
+						y += (float(SQUARE_SIZE) / pow(3, l)) * 3;
+						square.y = floor(y);
+
+					}
+
+
+					//Update screen
+					SDL_RenderPresent(gRenderer);
+
+					l++;
+				}
 			}
 		}
 	}
